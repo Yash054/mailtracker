@@ -1,0 +1,39 @@
+name: 🕒 Daily MailTracker Run
+
+on:
+  schedule:
+    - cron: "0 17 * * *" # 10 PM IST = 5:30 PM UTC
+  workflow_dispatch: # Allow manual run too
+
+jobs:
+  run-daily-tracker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔐 Setup environment (.env)
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+          echo "COHERE_API_KEY=${{ secrets.COHERE_API_KEY }}" >> .env
+        shell: bash
+
+      - name: 🔓 Decode credentials and token
+        run: |
+          echo "${{ secrets.CREDENTIALS_JSON_B64 }}" | base64 -d > credentials.json
+          echo "${{ secrets.TOKEN_JSON_B64 }}" | base64 -d > token.json
+        shell: bash
+
+      - name: 🚀 Run Mail Tracker
+        run: python main.py
