@@ -1,0 +1,9 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Environment and secret config
+.env
+*.env
+credentials.json
+token.json
