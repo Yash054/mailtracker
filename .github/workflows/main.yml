@@ -31,8 +31,8 @@ jobs:
 
       - name: 🔓 Decode credentials and token
         run: |
-          echo "${{ secrets.CREDENTIALS_JSON_B64 }}" | base64 -d > credentials.json
-          echo "${{ secrets.TOKEN_JSON_B64 }}" | base64 -d > token.json
+          base64 -d token.b64 > token.json
+          base64 -d credentials.b64 > credentials.json
         shell: bash
 
       - name: 🚀 Run Mail Tracker
