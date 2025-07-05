@@ -1,4 +1,4 @@
-name: 🕒 Daily MailTracker Run
+name: Daily MailTracker Run
 
 on:
   schedule:
@@ -9,31 +9,31 @@ jobs:
   run-daily-tracker:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🔐 Setup environment (.env)
+      - name: Setup environment (.env)
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
           echo "COHERE_API_KEY=${{ secrets.COHERE_API_KEY }}" >> .env
         shell: bash
 
-      - name: 🔓 Decode credentials and token
+      - name: Decode credentials and token
         run: |
           base64 -d token.b64 > token.json
           base64 -d credentials.b64 > credentials.json
         shell: bash
 
-      - name: 🚀 Run Mail Tracker
+      - name: Run Mail Tracker
         run: python main.py
