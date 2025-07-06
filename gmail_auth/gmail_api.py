@@ -3,6 +3,7 @@ import base64
 from email import message_from_bytes
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from utils.body_parser import extract_body
@@ -14,11 +15,15 @@ def authenticate_gmail():
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
+    # 🔄 Refresh token if needed (no browser!)
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+
+    # ❌ If still not valid (e.g. missing file or refresh_token), fail
     if not creds or not creds.valid:
-        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-        creds = flow.run_local_server(port=0, access_type='offline', prompt='consent')
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
+        raise RuntimeError("❌ Missing or invalid Gmail token. Generate token.json manually first.")
+
     return build('gmail', 'v1', credentials=creds)
 
 # def fetch_recent_emails(service, max_results=5):
