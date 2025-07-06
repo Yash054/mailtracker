@@ -9,7 +9,7 @@ from dateutil import parser
 
 def clean_old_records():
     """ Delete entries older than 2 weeks from Supabase DB"""
-    cutoff_date = (datetime.utcnow() - timedelta(days=14)).isoformat() + 'Z'
+    cutoff_date = (datetime.utcnow() - timedelta(days=21)).isoformat() + 'Z'
     supabase.table("MailTracker").delete().lt("email_date", cutoff_date).execute()
 
 
